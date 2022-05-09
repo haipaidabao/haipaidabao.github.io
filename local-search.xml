@@ -4,11 +4,136 @@
   
   
   <entry>
-    <title>李童的博客</title>
-    <link href="/2022/05/08/%E6%9D%8E%E7%AB%A5%E7%9A%84%E5%8D%9A%E5%AE%A2/"/>
-    <url>/2022/05/08/%E6%9D%8E%E7%AB%A5%E7%9A%84%E5%8D%9A%E5%AE%A2/</url>
+    <title>什么是闭包</title>
+    <link href="/2022/05/09/%E4%BB%80%E4%B9%88%E6%98%AF%E9%97%AD%E5%8C%85/"/>
+    <url>/2022/05/09/%E4%BB%80%E4%B9%88%E6%98%AF%E9%97%AD%E5%8C%85/</url>
     
-    <content type="html"><![CDATA[]]></content>
+    <content type="html"><![CDATA[<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><p>闭包是指有权访问另一个函数作用域中的变量的函数。</p><figure class="highlight arcade"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><pre><code class="hljs arcade"><span class="hljs-keyword">function</span> <span class="hljs-title function_">sayHi</span>(<span class="hljs-params">name</span>) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;<br>       <span class="hljs-built_in">console</span>.<span class="hljs-built_in">log</span>(<span class="hljs-string">`Hi! <span class="hljs-subst">$&#123;name&#125;</span>`</span>)<br>    &#125;<br>&#125;<br>const test = sayHi(<span class="hljs-string">&#x27;xiaoming&#x27;</span>)<br>test() <span class="hljs-comment">// Hi! xiaoming</span><br></code></pre></td></tr></table></figure><p>虽然sayHi函数已经执行完毕，但是其活动对象也不会被销毁，因为test函数仍然引用着sayHi函数中的变量name，这就是闭包。<br><br>但也因为闭包引用着另一个函数的变量，导致另一个函数已经不使用了也无法销毁，所以闭包使用过多，会占用较多的内存，这也是一个副作用，内存泄漏。</p><h2 id="有一个函数，参数是一个函数，返回值也是一个函数，返回的函数功能和入参的函数相似，但这个函数只能执行3次，再次执行无效，如何实现"><a href="#有一个函数，参数是一个函数，返回值也是一个函数，返回的函数功能和入参的函数相似，但这个函数只能执行3次，再次执行无效，如何实现" class="headerlink" title="有一个函数，参数是一个函数，返回值也是一个函数，返回的函数功能和入参的函数相似，但这个函数只能执行3次，再次执行无效，如何实现"></a>有一个函数，参数是一个函数，返回值也是一个函数，返回的函数功能和入参的函数相似，但这个函数只能执行3次，再次执行无效，如何实现</h2><p>这个题目是考察闭包的使用</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">sayHi</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;hi&#x27;</span>)<br>&#125;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">threeTimes</span>(<span class="hljs-params">fn</span>) &#123;<br>    <span class="hljs-keyword">let</span> times = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> &#123;<br>        <span class="hljs-keyword">if</span> (times++ &lt; <span class="hljs-number">3</span>) &#123;<br>            <span class="hljs-title function_">fn</span>()<br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">const</span> newFn = <span class="hljs-title function_">threeTimes</span>(sayHi)<br><span class="hljs-title function_">newFn</span>()<br><span class="hljs-title function_">newFn</span>()<br><span class="hljs-title function_">newFn</span>()<br><span class="hljs-title function_">newFn</span>()<br><span class="hljs-title function_">newFn</span>() <span class="hljs-comment">// 后面两次执行都无任何反应</span><br></code></pre></td></tr></table></figure><p>通过闭包变量 <code>times</code> 来控制函数的执行</p><h2 id="实现add函数-让add-a-b-和add-a-b-两种调用结果相同"><a href="#实现add函数-让add-a-b-和add-a-b-两种调用结果相同" class="headerlink" title="实现add函数,让add(a)(b)和add(a,b)两种调用结果相同"></a>实现add函数,让add(a)(b)和add(a,b)两种调用结果相同</h2><figure class="highlight wren"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs wren"><span class="hljs-variable">function</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">a</span>, <span class="hljs-params">b</span>) &#123;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-variable">b</span> <span class="hljs-operator">==</span><span class="hljs-operator">=</span> <span class="hljs-variable">undefined</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-title function_">function</span>(<span class="hljs-params">x</span>) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-variable">a</span> <span class="hljs-operator">+</span> <span class="hljs-variable">x</span><br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-variable">a</span> <span class="hljs-operator">+</span> <span class="hljs-variable">b</span><br>&#125;<br></code></pre></td></tr></table></figure><h4 id=""><a href="#" class="headerlink" title=""></a></h4>]]></content>
+    
+    
+    <categories>
+      
+      <category>闭包</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>vue  js</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>vue如何优化首页加速度</title>
+    <link href="/2022/01/09/vue%E5%A6%82%E4%BD%95%E4%BC%98%E5%8C%96%E9%A6%96%E9%A1%B5%E5%8A%A0%E9%80%9F%E5%BA%A6/"/>
+    <url>/2022/01/09/vue%E5%A6%82%E4%BD%95%E4%BC%98%E5%8C%96%E9%A6%96%E9%A1%B5%E5%8A%A0%E9%80%9F%E5%BA%A6/</url>
+    
+    <content type="html"><![CDATA[<h3 id="首先分析原因"><a href="#首先分析原因" class="headerlink" title="首先分析原因"></a>首先分析原因</h3><p>VUE首页加载过慢，其原因是因为它是一个单页应用，需要将所有需要的资源都下载到浏览器端并解析。</p><h3 id="考虑解决办法"><a href="#考虑解决办法" class="headerlink" title="考虑解决办法"></a>考虑解决办法</h3><ul><li>1.使用首屏SSR + 跳转SPA方式来优化</li><li>2.改单页应用为多页应用，需要修改webpack的entry</li><li>3.CDN资源还是很重要的，最好分开，也能减少一些不必要的资源损耗</li><li>4.骨架屏这种的用户体验的东西一定要上</li><li>5.合理使用缓存</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>优化问题</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>vue</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>一个登录页面</title>
+    <link href="/2021/12/13/%E4%B8%80%E4%B8%AA%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2/"/>
+    <url>/2021/12/13/%E4%B8%80%E4%B8%AA%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2/</url>
+    
+    <content type="html"><![CDATA[<h3 id="纯HTML写出来的登录页面"><a href="#纯HTML写出来的登录页面" class="headerlink" title="纯HTML写出来的登录页面"></a>纯HTML写出来的登录页面</h3><p>&#96;综合案例.html</p><!DOCTYPE html><html lang="en"><head><p>    <meta charset="UTF-8"></p></head><body>  <form action="">  <fieldset><p>​    <legend>学生档案</legend></p><p>   <label> 姓名：<input type="text" placeholder="请输入学生姓名"/></label><br/><br/></p><p>​    <label> 手机号：<input type="tel" /></label><br/><br/></p><p>​    <label> 邮箱：<input type="email" /></label><br/><br/></p><p>​    <label> 所属学院：<input type="text" placeholder="请选择学院"  list="xuyuan" /></label></p><p>​    <datalist  id="xuyuan"></p><p>​    <option>信息学院</option></p><p>​      <option>数学学院</option></p><p>​        <option>建筑工程</option></p><p>​          <option>艺术学院</option></p><p>​    </datalist></p><p>​    <br/><br/></p><p>​    <label> 出生日期：<input type="date" /></label><br/><br/></p><p>​    <label> 成绩：<input type="number" /></label><br/><br/></p><p>​    <label> 毕业时间：<input type="date" /></label><br/><br/></p><p>​    <input type="submit" /><input type="reset" /></p>  </fieldset>   </form></body></html>`]]></content>
+    
+    
+    <categories>
+      
+      <category>html 静态页面</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>html页面</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>DIV水平居中问题</title>
+    <link href="/2021/12/11/DIV%E6%B0%B4%E5%B9%B3%E5%B1%85%E4%B8%AD%E9%97%AE%E9%A2%98/"/>
+    <url>/2021/12/11/DIV%E6%B0%B4%E5%B9%B3%E5%B1%85%E4%B8%AD%E9%97%AE%E9%A2%98/</url>
+    
+    <content type="html"><![CDATA[<h1 id="div水平垂直居中的方法"><a href="#div水平垂直居中的方法" class="headerlink" title="div水平垂直居中的方法"></a>div水平垂直居中的方法</h1><p>在平时，我们经常会碰到让一个div框针对某个模块上下左右都居中（水平垂直居中），其实针对这种情况，我们有多种方法实现。</p><p><strong>方法一:</strong></p><p>　　绝对定位方法：不确定当前div的宽度和高度，采用 transform: translate(-50%,-50%); 当前div的父级添加相对定位（position: relative;）</p><p>　　图片展示：</p><img src="/2021/12/11/DIV%E6%B0%B4%E5%B9%B3%E5%B1%85%E4%B8%AD%E9%97%AE%E9%A2%98/%E5%B1%85%E4%B8%AD%E9%97%AE%E9%A2%981.png" class=""><p>代码如下：</p><figure class="highlight css"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">div</span>&#123;<br>    <span class="hljs-attribute">background</span>:red;<br>    <span class="hljs-attribute">position</span>: absolute;<br>    <span class="hljs-attribute">left</span>:<span class="hljs-number">50%</span>;<br>    <span class="hljs-attribute">top</span>:<span class="hljs-number">50%</span>;<br>    <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translate</span>(-<span class="hljs-number">50%</span>, -<span class="hljs-number">50%</span>);<br>&#125;<br></code></pre></td></tr></table></figure><p><strong>方法二:</strong></p><p>　　绝对定位方法：确定了当前div的宽度，margin值为当前div宽度一半的负值</p><p>　　图片展示： 如方法一的图片展示</p><p>　　代码如下：</p><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">div</span>&#123;<br>    <span class="hljs-attribute">width</span>:<span class="hljs-number">600px</span>;<br>    <span class="hljs-attribute">height</span>: <span class="hljs-number">600px</span>;<br>    <span class="hljs-attribute">background</span>:red;<br>    <span class="hljs-attribute">position</span>: absolute;<br>    <span class="hljs-attribute">left</span>:<span class="hljs-number">50%</span>;<br>    <span class="hljs-attribute">top</span>:<span class="hljs-number">50%</span>;<br>    <span class="hljs-attribute">margin-left</span>:-<span class="hljs-number">300px</span>;<br>    <span class="hljs-attribute">margin-top</span>:-<span class="hljs-number">300px</span>;<br>&#125;<br></code></pre></td></tr></table></figure><p><strong>方法三：</strong></p><p>　　绝对定位方法：绝对定位下top left right bottom 都设置0</p><p>　　图片展示： 如方法一的图片展示</p><p>　　代码如下：</p><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.child</span>&#123;<br>    <span class="hljs-attribute">width</span>: <span class="hljs-number">600px</span>;<br>    <span class="hljs-attribute">height</span>: <span class="hljs-number">600px</span>;<br>    <span class="hljs-attribute">background</span>: red;<br>    <span class="hljs-attribute">position</span>:absolute;<br>    <span class="hljs-attribute">left</span>:<span class="hljs-number">0</span>;<br>    <span class="hljs-attribute">top</span>: <span class="hljs-number">0</span>;<br>    <span class="hljs-attribute">bottom</span>: <span class="hljs-number">0</span>;<br>    <span class="hljs-attribute">right</span>: <span class="hljs-number">0</span>;<br>   <span class="hljs-attribute">margin</span>: auto;<br>&#125;<br></code></pre></td></tr></table></figure><p><strong>方法四:</strong></p><p>　　flex布局方法：当前div的父级添加flex css样式</p><p>   展示图如下：</p><img src="/2021/12/11/DIV%E6%B0%B4%E5%B9%B3%E5%B1%85%E4%B8%AD%E9%97%AE%E9%A2%98/%E5%B1%85%E4%B8%AD%E9%97%AE%E9%A2%982.png" class=""><p>代码如下：</p><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.box</span>&#123;<br>    <span class="hljs-attribute">height</span>:<span class="hljs-number">800px</span>;<br>    -webkit-<span class="hljs-attribute">display</span>:flex;<br>    <span class="hljs-attribute">display</span>:flex;<br>    -webkit-<span class="hljs-attribute">align-items</span>:center;<br>    <span class="hljs-attribute">align-items</span>:center;<br>    -webkit-<span class="hljs-attribute">justify-content</span>:center;<br>    <span class="hljs-attribute">justify-content</span>:center;<br>    <span class="hljs-attribute">border</span>:<span class="hljs-number">1px</span> solid <span class="hljs-number">#ccc</span>;<br>&#125;<br><span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.child</span>&#123;<br>    <span class="hljs-attribute">width</span>:<span class="hljs-number">600px</span>;<br>    <span class="hljs-attribute">height</span>:<span class="hljs-number">600px</span>;<br>    <span class="hljs-attribute">background-color</span>:red;<br>&#125;<br></code></pre></td></tr></table></figure><p><strong>方法五:</strong></p><p>　　table-cell实现水平垂直居中: table-cell middle center组合使用</p><p>   展示图如下：</p><img src="/2021/12/11/DIV%E6%B0%B4%E5%B9%B3%E5%B1%85%E4%B8%AD%E9%97%AE%E9%A2%98/%E5%B1%85%E4%B8%AD%E9%97%AE%E9%A2%983.png" class=""><p> 代码如下：</p><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.table-cell</span> &#123;<br>    <span class="hljs-attribute">display</span>: table-cell;<br>    <span class="hljs-attribute">vertical-align</span>: middle;<br>    <span class="hljs-attribute">text-align</span>: center;<br>    <span class="hljs-attribute">width</span>: <span class="hljs-number">240px</span>;<br>    <span class="hljs-attribute">height</span>: <span class="hljs-number">180px</span>;<br>    <span class="hljs-attribute">border</span>:<span class="hljs-number">1px</span> solid <span class="hljs-number">#666</span>;<br>&#125;<br></code></pre></td></tr></table></figure><p><strong>方法六:</strong></p><p>　　绝对定位：calc() 函数动态计算实现水平垂直居中</p><p>　　展示图如下</p><img src="/2021/12/11/DIV%E6%B0%B4%E5%B9%B3%E5%B1%85%E4%B8%AD%E9%97%AE%E9%A2%98/%E5%B1%85%E4%B8%AD%E9%97%AE%E9%A2%984.png" class=""><p>代码如下：</p><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.calc</span>&#123;<br>  <span class="hljs-attribute">position</span>: relative;<br>  <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#ccc</span>;<br>  <span class="hljs-attribute">width</span>: <span class="hljs-number">400px</span>;<br>  <span class="hljs-attribute">height</span>: <span class="hljs-number">160px</span>;<br>&#125;<br><span class="hljs-selector-class">.calc</span> <span class="hljs-selector-class">.child</span>&#123;<br>  <span class="hljs-attribute">position</span>: absolute;<br>  <span class="hljs-attribute">width</span>: <span class="hljs-number">200px</span>;<br>  <span class="hljs-attribute">height</span>: <span class="hljs-number">50px</span>;<br>  <span class="hljs-attribute">left</span>:<span class="hljs-built_in">-webkit-calc</span>((<span class="hljs-number">400px</span> - <span class="hljs-number">200px</span>)/<span class="hljs-number">2</span>);<br>  <span class="hljs-attribute">top</span>:<span class="hljs-built_in">-webkit-calc</span>((<span class="hljs-number">160px</span> - <span class="hljs-number">50px</span>)/<span class="hljs-number">2</span>);<br>  <span class="hljs-attribute">left</span>:<span class="hljs-built_in">-moz-calc</span>((<span class="hljs-number">400px</span> - <span class="hljs-number">200px</span>)/<span class="hljs-number">2</span>);<br>  <span class="hljs-attribute">top</span>:<span class="hljs-built_in">-moz-calc</span>((<span class="hljs-number">160px</span> - <span class="hljs-number">50px</span>)/<span class="hljs-number">2</span>);<br>  <span class="hljs-attribute">left</span>:<span class="hljs-built_in">calc</span>((<span class="hljs-number">400px</span> - <span class="hljs-number">200px</span>)/<span class="hljs-number">2</span>);<br>  <span class="hljs-attribute">top</span>:<span class="hljs-built_in">calc</span>((<span class="hljs-number">160px</span> - <span class="hljs-number">50px</span>)/<span class="hljs-number">2</span>);<br>&#125;　　<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>水平居中问题</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>html div</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>前端优化</title>
+    <link href="/2021/10/15/%E5%89%8D%E7%AB%AF%E4%BC%98%E5%8C%96/"/>
+    <url>/2021/10/15/%E5%89%8D%E7%AB%AF%E4%BC%98%E5%8C%96/</url>
+    
+    <content type="html"><![CDATA[<h1 id="前端优化问题"><a href="#前端优化问题" class="headerlink" title="前端优化问题"></a>前端优化问题</h1><ol><li>减少 HTTP 请求</li><li>减少 DOM 操作</li><li>避免不必要的重绘与重排</li><li>优化 CSS 选择器（从右向左匹配）</li><li>CSS&#x2F;JS minify，减少文件体积</li><li>开启 Gzip 压缩</li><li>将 CSS 放到顶部，JavaScript 放到尾部</li><li>压缩图片以及使用 CSS Sprite</li><li>使用 CDN 加速，适当进行文件缓存</li><li>合理控制 cookie 大小（每次请求都会包含 cookie）</li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>优化问题</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>前端</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>分享生活</title>
+    <link href="/2021/10/08/%E5%88%86%E4%BA%AB%E7%94%9F%E6%B4%BB/"/>
+    <url>/2021/10/08/%E5%88%86%E4%BA%AB%E7%94%9F%E6%B4%BB/</url>
+    
+    <content type="html"><![CDATA[<p>刚来杭州的时候，很没有归属感，然后我就养了一只可爱的小猫，它有点呆傻蠢萌，一个人工作的时候有它陪伴会温馨很多!</p><h4 id="它的名字叫-胖多多"><a href="#它的名字叫-胖多多" class="headerlink" title="它的名字叫 胖多多"></a>它的名字叫 胖多多</h4><h5 id="因为我希望它未来的日子多鱼多肉，胖了会更可爱"><a href="#因为我希望它未来的日子多鱼多肉，胖了会更可爱" class="headerlink" title="(因为我希望它未来的日子多鱼多肉，胖了会更可爱)"></a>(因为我希望它未来的日子多鱼多肉，胖了会更可爱)</h5><img src="/2021/10/08/%E5%88%86%E4%BA%AB%E7%94%9F%E6%B4%BB/1.jpg" class=""><img src="/2021/10/08/%E5%88%86%E4%BA%AB%E7%94%9F%E6%B4%BB/2.jpg" class=""><img src="/2021/10/08/%E5%88%86%E4%BA%AB%E7%94%9F%E6%B4%BB/3.jpg" class=""><img src="/2021/10/08/%E5%88%86%E4%BA%AB%E7%94%9F%E6%B4%BB/4.jpg" class=""><img src="/2021/10/08/%E5%88%86%E4%BA%AB%E7%94%9F%E6%B4%BB/5.jpg" class=""><img src="/2021/10/08/%E5%88%86%E4%BA%AB%E7%94%9F%E6%B4%BB/6.jpg" class=""><img src="/2021/10/08/%E5%88%86%E4%BA%AB%E7%94%9F%E6%B4%BB/7.jpg" class="">]]></content>
     
     
     <categories>
@@ -21,6 +146,31 @@
     <tags>
       
       <tag>胖多多</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>李童的博客</title>
+    <link href="/2021/06/08/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E6%9D%A1%E5%8D%9A%E5%AE%A2/"/>
+    <url>/2021/06/08/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E6%9D%A1%E5%8D%9A%E5%AE%A2/</url>
+    
+    <content type="html"><![CDATA[<h1 id="这是我第一次使用HEXO和GITHUB完成的博客"><a href="#这是我第一次使用HEXO和GITHUB完成的博客" class="headerlink" title="这是我第一次使用HEXO和GITHUB完成的博客"></a>这是我第一次使用HEXO和GITHUB完成的博客</h1><p>Hexo是一个基于 node.js的快速生成静态博客的开源框架,支持 Markdown和大多数 Octopress插件,一个命令即可部署到 Github页面、 Giteee、 Heroku等,强大的APl,可无限扩展,拥有数百个主题和插件。</p><h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><ol><li>安装Node.js</li><li>安装Git</li><li>安装Hexo</li></ol><h2 id="Github上建站访问"><a href="#Github上建站访问" class="headerlink" title="Github上建站访问"></a>Github上建站访问</h2><ol><li><p>新建github仓库：仓库名称为【用户名+.github.io】</p></li><li><p>安装hexo上传插件<br><code>（npm install hexo-deployer-git --save）</code></p></li><li><p>修改hexo配置文件指定仓库路径<br><code>vim _config.yml #找到Deploymentdeploy:  type: git  repo: 你的github仓库路径  branch: master</code></p></li><li><p>推送站点到github<br><code>推送命令hexo d</code></p></li></ol><h3 id=""><a href="#" class="headerlink" title=""></a></h3>]]></content>
+    
+    
+    <categories>
+      
+      <category>HEXO</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>日常学习</tag>
       
     </tags>
     
